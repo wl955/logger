@@ -1,4 +1,4 @@
-module github.com/wlb1055/logger
+module github.com/wl955/logger
 
 go 1.17
 
