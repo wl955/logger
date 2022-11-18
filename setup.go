@@ -14,8 +14,12 @@ import (
 
 var logger *zap.SugaredLogger
 
-func Setup() (w io.Writer, f func()) {
-	w, e := rotatelogs.New(
+var w io.Writer
+
+func init() {
+	var e error
+
+	w, e = rotatelogs.New(
 		"logs/rotatelogs.log.%Y%m%d%H%M",
 		rotatelogs.WithLinkName("logs/rotatelogs.log"),
 		rotatelogs.WithMaxAge(time.Hour*24*7),
@@ -35,10 +39,14 @@ func Setup() (w io.Writer, f func()) {
 		zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
 		zap.AddCallerSkip(1),
 	).Sugar()
+}
 
-	return w, func() {
-		logger.Sync()
-	}
+func Writer() io.Writer {
+	return w
+}
+
+func Sync() {
+	logger.Sync()
 }
 
 func newEncoderConfig() zapcore.EncoderConfig {
