@@ -1,10 +1,10 @@
-module github.com/wl955/log
+module github.com/wlbwlbwlb/log
 
 go 1.17
 
 require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	go.uber.org/zap v1.23.0
+	go.uber.org/zap v1.24.0
 )
 
 require (
