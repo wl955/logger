@@ -6,20 +6,17 @@ import (
 	"os"
 	"time"
 
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
 var logger *zap.SugaredLogger
 
-var w io.Writer
+var writer io.Writer
 
 func init() {
-	var e error
-
-	w, e = rotatelogs.New(
+	w, e := rotatelogs.New(
 		"logs/rotatelogs.log.%Y%m%d%H%M",
 		rotatelogs.WithLinkName("logs/rotatelogs.log"),
 		rotatelogs.WithMaxAge(time.Hour*24*7),
@@ -28,6 +25,8 @@ func init() {
 	if e != nil {
 		log.Fatal(e.Error())
 	}
+
+	writer = io.MultiWriter(os.Stdout, w)
 
 	logger = zap.New(
 		zapcore.NewCore(
@@ -42,11 +41,11 @@ func init() {
 }
 
 func Writer() io.Writer {
-	return w
+	return writer
 }
 
-func Sync() {
-	logger.Sync()
+func Logger() *zap.SugaredLogger {
+	return logger
 }
 
 func newEncoderConfig() zapcore.EncoderConfig {
