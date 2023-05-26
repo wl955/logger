@@ -26,26 +26,18 @@ func init() {
 		log.Fatal(e.Error())
 	}
 
-	writer = io.MultiWriter(os.Stdout, w)
+	writer = io.MultiWriter(os.Stderr, w)
 
 	logger = zap.New(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(newEncoderConfig()),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)),
+			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stderr), zapcore.AddSync(w)),
 			zap.NewAtomicLevel(),
 		),
 		zap.AddCaller(),
 		zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
 		zap.AddCallerSkip(1),
 	).Sugar()
-}
-
-func Writer() io.Writer {
-	return writer
-}
-
-func Logger() *zap.SugaredLogger {
-	return logger
 }
 
 func newEncoderConfig() zapcore.EncoderConfig {
