@@ -26,12 +26,12 @@ func init() {
 		log.Fatal(e.Error())
 	}
 
-	writer = io.MultiWriter(os.Stderr, w)
+	writer = io.MultiWriter(os.Stdout, w)
 
 	logger = zap.New(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(newEncoderConfig()),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stderr), zapcore.AddSync(w)),
+			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)),
 			zap.NewAtomicLevel(),
 		),
 		zap.AddCaller(),
