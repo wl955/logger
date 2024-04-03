@@ -45,6 +45,6 @@ func Fatalf(template string, args ...interface{}) {
 	logger.Fatalf(template, args...)
 }
 
-func With(args ...interface{}) {
-	logger.With(args...)
+func With(args ...interface{}) *zap.SugaredLogger {
+	return logger.With(args...)
 }
