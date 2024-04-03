@@ -29,10 +29,22 @@ func Errorf(template string, args ...interface{}) {
 	logger.Errorf(template, args...)
 }
 
+func Panic(args ...interface{}) {
+	logger.Panic(args...)
+}
+
+func Panicf(template string, args ...interface{}) {
+	logger.Panicf(template, args...)
+}
+
 func Fatal(args ...interface{}) {
 	logger.Fatal(args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
 	logger.Fatalf(template, args...)
+}
+
+func With(args ...interface{}) {
+	logger.With(args...)
 }
