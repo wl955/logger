@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var logger *zap.SugaredLogger
+var L *zap.SugaredLogger
 
 var writer io.Writer
 
@@ -28,15 +28,14 @@ func init() {
 
 	writer = io.MultiWriter(os.Stdout, w)
 
-	logger = zap.New(
+	L = zap.New(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(newEncoderConfig()),
 			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)),
 			zap.NewAtomicLevel(),
 		),
-		zap.AddCaller(),
 		zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
-		zap.AddCallerSkip(1),
+		zap.AddCaller(),
 	).Sugar()
 }
 
