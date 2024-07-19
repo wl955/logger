@@ -2,7 +2,6 @@ package log
 
 import (
 	"io"
-	"log"
 	"os"
 	"time"
 
@@ -11,26 +10,20 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var L *zap.SugaredLogger
-
-var writer io.Writer
-
 func init() {
-	w, e := rotatelogs.New(
-		"logs/rotatelogs.log.%Y%m%d%H%M",
+	w, e := rotatelogs.New("logs/rotatelogs.log.%Y%m%d%H%M",
 		rotatelogs.WithLinkName("logs/rotatelogs.log"),
 		rotatelogs.WithMaxAge(time.Hour*24*7),
 		rotatelogs.WithRotationTime(time.Hour*24),
 	)
 	if e != nil {
-		log.Fatal(e.Error())
+		panic(e)
 	}
 
 	writer = io.MultiWriter(os.Stdout, w)
 
 	L = zap.New(
-		zapcore.NewCore(
-			zapcore.NewJSONEncoder(newEncoderConfig()),
+		zapcore.NewCore(zapcore.NewJSONEncoder(newEncoderConfig()),
 			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)),
 			zap.NewAtomicLevel(),
 		),
@@ -55,3 +48,7 @@ func newEncoderConfig() zapcore.EncoderConfig {
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 }
+
+var writer io.Writer
+
+var L *zap.SugaredLogger
