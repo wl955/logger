@@ -33,5 +33,5 @@ func (p *Wrap) Panicf(template string, args ...interface{}) {
 }
 
 func (p *Wrap) With(args ...interface{}) *Wrap {
-	return &Wrap{logger: wrapper.logger.With(args...)}
+	return &Wrap{logger: p.logger.With(args...)}
 }

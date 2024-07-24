@@ -52,7 +52,7 @@ func newEncoderConfig() zapcore.EncoderConfig {
 
 var writer io.Writer
 
-var wrapper Wrap
+var wrapper = &Wrap{}
 
 type Wrap struct {
 	logger *zap.SugaredLogger
