@@ -22,7 +22,7 @@ func init() {
 
 	writer = io.MultiWriter(os.Stdout, w)
 
-	L = zap.New(
+	wrapper.logger = zap.New(
 		zapcore.NewCore(zapcore.NewJSONEncoder(newEncoderConfig()),
 			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)),
 			zap.NewAtomicLevel(),
@@ -51,4 +51,8 @@ func newEncoderConfig() zapcore.EncoderConfig {
 
 var writer io.Writer
 
-var L *zap.SugaredLogger
+var wrapper Wrap
+
+type Wrap struct {
+	logger *zap.SugaredLogger
+}
