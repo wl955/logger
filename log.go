@@ -49,3 +49,7 @@ func Panicf(template string, args ...interface{}) {
 func With(args ...interface{}) *Wrap {
 	return &Wrap{logger: wrapper.logger.With(args...)}
 }
+
+func Sync() error {
+	return wrapper.logger.Sync()
+}
