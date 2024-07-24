@@ -29,6 +29,7 @@ func init() {
 		),
 		zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
 		zap.AddCaller(),
+		zap.AddCallerSkip(1),
 	).Sugar()
 }
 
