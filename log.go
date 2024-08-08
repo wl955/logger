@@ -6,50 +6,54 @@ import (
 	"go.uber.org/zap"
 )
 
+var writer io.Writer
+
 func Writer() io.Writer {
 	return writer
 }
 
+var logger *zap.SugaredLogger
+
 func Logger() *zap.SugaredLogger {
-	return wrapper.logger
+	return logger
 }
 
 func Info(args ...interface{}) {
-	wrapper.logger.Info(args...)
+	logger.Info(args...)
 }
 
 func Warn(args ...interface{}) {
-	wrapper.logger.Warn(args...)
+	logger.Warn(args...)
 }
 
 func Error(args ...interface{}) {
-	wrapper.logger.Error(args...)
+	logger.Error(args...)
 }
 
 func Panic(args ...interface{}) {
-	wrapper.logger.Error(args...)
+	logger.Error(args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	wrapper.logger.Infof(template, args...)
+	logger.Infof(template, args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	wrapper.logger.Warnf(template, args...)
+	logger.Warnf(template, args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	wrapper.logger.Errorf(template, args...)
+	logger.Errorf(template, args...)
 }
 
 func Panicf(template string, args ...interface{}) {
-	wrapper.logger.Panicf(template, args...)
+	logger.Panicf(template, args...)
 }
 
 func With(args ...interface{}) *Wrap {
-	return &Wrap{logger: wrapper.logger.With(args...)}
+	return &Wrap{logger: logger.With(args...)}
 }
 
 func Sync() error {
-	return wrapper.logger.Sync()
+	return logger.Sync()
 }

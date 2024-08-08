@@ -1,5 +1,11 @@
 package log
 
+import "go.uber.org/zap"
+
+type Wrap struct {
+	logger *zap.SugaredLogger
+}
+
 func (p *Wrap) Info(args ...interface{}) {
 	p.logger.Info(args...)
 }
