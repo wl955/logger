@@ -19,7 +19,7 @@ func (p *Wrap) Error(args ...interface{}) {
 }
 
 func (p *Wrap) Panic(args ...interface{}) {
-	p.logger.Error(args...)
+	p.logger.Panic(args...)
 }
 
 func (p *Wrap) Infof(template string, args ...interface{}) {
