@@ -12,6 +12,18 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var writer io.Writer
+
+func Writer() io.Writer {
+	return writer
+}
+
+var logger *zap.SugaredLogger
+
+func Logger() *zap.SugaredLogger {
+	return logger
+}
+
 var opt Options
 
 func Init(serviceName string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
@@ -67,14 +79,65 @@ func newEncoderConfig() zapcore.EncoderConfig {
 	}
 }
 
-var writer io.Writer
-
-func Writer() io.Writer {
-	return writer
+func Info(args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Info(args...)
 }
 
-var logger *zap.SugaredLogger
+func Warn(args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Warn(args...)
+}
 
-func Logger() *zap.SugaredLogger {
-	return logger
+func Error(args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Error(args...)
+}
+
+func Panic(args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Panic(args...)
+}
+
+func Infof(template string, args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Infof(template, args...)
+}
+
+func Warnf(template string, args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Warnf(template, args...)
+}
+
+func Errorf(template string, args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Errorf(template, args...)
+}
+
+func Panicf(template string, args ...interface{}) {
+	if nil == logger {
+		panic("init first")
+	}
+	logger.With("service", opt.service).Panicf(template, args...)
+}
+
+func With(args ...interface{}) *Wrap {
+	if nil == logger {
+		panic("init first")
+	}
+	return &Wrap{logger: logger.With("service", opt.service).With(args...)}
 }
