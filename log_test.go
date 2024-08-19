@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	Init("example", Feishu("qwe"))
+	Init("example", Feishu("token"))
 }
 
 func TestError(t *testing.T) {

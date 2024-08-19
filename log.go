@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/wlbwlbwlb/log/feishu"
+	"github.com/wlbwlbwlb/log/file"
 
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -33,30 +33,24 @@ func Init(serviceName string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
 	for _, fn := range opts {
 		fn(&opt)
 	}
-
-	w, e := rotatelogs.New("logs/rotatelogs.log.%Y%m%d%H%M",
-		rotatelogs.WithLinkName("logs/rotatelogs.log"),
-		rotatelogs.WithMaxAge(time.Hour*24*7),
-		rotatelogs.WithRotationTime(time.Hour*24),
-	)
-	if e != nil {
-		return logger, e
-	}
+	var e error
 
 	encoder := zapcore.NewJSONEncoder(newEncoderConfig())
 
-	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(w)), zapcore.InfoLevel),
-		zapcore.NewCore(encoder, zapcore.AddSync(feishu.Writer), zapcore.ErrorLevel),
-	)
-
-	writer = io.MultiWriter(os.Stdout, w)
+	writer = io.MultiWriter(os.Stdout, file.Writer)
 
 	logger = zap.New(
-		core,
+		zapcore.NewTee(
+			zapcore.NewCore(encoder,
+				zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(file.Writer)),
+				zapcore.InfoLevel,
+			),
+			zapcore.NewCore(encoder, zapcore.AddSync(feishu.Writer), zapcore.ErrorLevel),
+		),
+		zap.Fields(zap.String("service", opt.service)),
 		zap.AddStacktrace(zapcore.ErrorLevel),
-		zap.AddCaller(),
 		zap.AddCallerSkip(1),
+		zap.AddCaller(),
 	).Sugar()
 
 	return logger, e
@@ -83,61 +77,61 @@ func Info(args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Info(args...)
+	logger.Info(args...)
 }
 
 func Warn(args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Warn(args...)
+	logger.Warn(args...)
 }
 
 func Error(args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Error(args...)
+	logger.Error(args...)
 }
 
 func Panic(args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Panic(args...)
+	logger.Panic(args...)
 }
 
 func Infof(template string, args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Infof(template, args...)
+	logger.Infof(template, args...)
 }
 
 func Warnf(template string, args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Warnf(template, args...)
+	logger.Warnf(template, args...)
 }
 
 func Errorf(template string, args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Errorf(template, args...)
+	logger.Errorf(template, args...)
 }
 
 func Panicf(template string, args ...interface{}) {
 	if nil == logger {
 		panic("init first")
 	}
-	logger.With("service", opt.service).Panicf(template, args...)
+	logger.Panicf(template, args...)
 }
 
 func With(args ...interface{}) *Wrap {
 	if nil == logger {
 		panic("init first")
 	}
-	return &Wrap{logger: logger.With("service", opt.service).With(args...)}
+	return &Wrap{logger: logger.With(args...)}
 }
