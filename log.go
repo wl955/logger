@@ -26,9 +26,9 @@ func Logger() *zap.SugaredLogger {
 
 var opt Options
 
-func Init(serviceName string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
+func Init(name string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
 	opt = Options{
-		service: serviceName,
+		Name: name,
 	}
 	for _, fn := range opts {
 		fn(&opt)
@@ -47,7 +47,7 @@ func Init(serviceName string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
 			),
 			zapcore.NewCore(encoder, zapcore.AddSync(feishu.Writer), zapcore.ErrorLevel),
 		),
-		zap.Fields(zap.String("service", opt.service)),
+		zap.Fields(zap.String("name", opt.Name)),
 		zap.AddStacktrace(zapcore.ErrorLevel),
 		zap.AddCallerSkip(1),
 		zap.AddCaller(),

@@ -3,7 +3,7 @@ package log
 import "github.com/wlbwlbwlb/log/feishu"
 
 type Options struct {
-	service string
+	Name string
 }
 
 type OptionFunc func(*Options)
