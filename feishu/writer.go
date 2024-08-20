@@ -19,6 +19,10 @@ func (o *feishu) With(token string) {
 }
 
 func (o *feishu) Write(p []byte) (n int, e error) {
+	if 0 == len(o.token) {
+		return
+	}
+
 	type Content struct {
 		Text string `json:"text"`
 	}
