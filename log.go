@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/wlbwlbwlb/log/feishu"
-	"github.com/wlbwlbwlb/log/file"
+	"github.com/wlbwlbwlb/log/logfile"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -37,12 +37,12 @@ func Init(name string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
 
 	encoder := zapcore.NewJSONEncoder(newEncoderConfig())
 
-	writer = io.MultiWriter(os.Stdout, file.Writer)
+	writer = io.MultiWriter(os.Stdout, logfile.Writer)
 
 	logger = zap.New(
 		zapcore.NewTee(
 			zapcore.NewCore(encoder,
-				zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(file.Writer)),
+				zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(logfile.Writer)),
 				zapcore.InfoLevel,
 			),
 			zapcore.NewCore(encoder, zapcore.AddSync(feishu.Writer), zapcore.ErrorLevel),
