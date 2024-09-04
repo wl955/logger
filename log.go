@@ -26,14 +26,13 @@ func Logger() *zap.SugaredLogger {
 
 var opt Options
 
-func Init(name string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
+func Init(name string, opts ...OptionFunc) (e error) {
 	opt = Options{
 		Name: name,
 	}
 	for _, fn := range opts {
 		fn(&opt)
 	}
-	var e error
 
 	encoder := zapcore.NewJSONEncoder(newEncoderConfig())
 
@@ -53,7 +52,7 @@ func Init(name string, opts ...OptionFunc) (*zap.SugaredLogger, error) {
 		zap.AddCaller(),
 	).Sugar()
 
-	return logger, e
+	return
 }
 
 func newEncoderConfig() zapcore.EncoderConfig {
@@ -71,6 +70,10 @@ func newEncoderConfig() zapcore.EncoderConfig {
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
+}
+
+func Sync() error {
+	return logger.Sync()
 }
 
 func Info(args ...interface{}) {
